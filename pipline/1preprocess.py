@@ -10,7 +10,7 @@ spark = (
         SparkSession.builder
         .appName("my-Project")
         .master("local")
-        .getOrCreat()
+        .getOrCreate()
 )
 # 데이터 로드
 file_path = sys.argv[1]
