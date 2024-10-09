@@ -9,7 +9,7 @@ class FourCal:                         # self에는 객체 FourlCal의 정보가
     def __init__(self, first, second): # FourCal 객체를 생성할때 자동으로 변수가 초기화된다.
         self.first = first             # FourCal 객체 생성시 두가지 변수를 지정한다.
         self.second = second           # 생성자 __init__ 은 객체가 직접 변수를 받을 수 있게 해준다
-        self.__third = 0               # third 라는 변수는 객체 생성시 parameter로 받지 않아도 된다. grobal
+        self.__third = 0               # third 라는 변수는 객체 생성시 parameter로 받지 않아도 된다. global
     def add(self):
         result = self.first + self.second
         return result
