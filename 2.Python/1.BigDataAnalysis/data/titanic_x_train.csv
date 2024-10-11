@@ -1,4 +1,4 @@
-PassengerId,티켓등급,승객이름,성별,나이,형제자매배우자수,부모자식수,티켓번호,운임요금,객실번호,선착장
+癤풮assengerId,level,name,sex,age,partner,parent,ticketno,fee,no,entry
 1,3,"Braund, Mr. Owen Harris",male,22,1,0,A/5 21171,7.25,,S
 2,1,"Cumings, Mrs. John Bradley (Florence Briggs Thayer)",female,38,1,0,PC 17599,71.2833,C85,C
 3,3,"Heikkinen, Miss. Laina",female,26,0,0,STON/O2. 3101282,7.925,,S
