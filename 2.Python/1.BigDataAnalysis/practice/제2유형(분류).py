@@ -76,9 +76,10 @@ data = pd.concat([x_test_id, x_test_predict], axis = 1)
 data.to_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\data\go.csv", index = False)
 
 # 모델 평가하기 - 평가지표 계산용 (제출코드는 아님 , X_TEST, Y_TEST 사용)
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, accuracy_score
 Y_TEST_PREDICT = pd.DataFrame(model.predict(X_TEST))
 print(roc_auc_score(Y_TEST, Y_TEST_PREDICT))
+print(accuracy_score(Y_TEST, Y_TEST_PREDICT))
 
 
 print("code is work")
