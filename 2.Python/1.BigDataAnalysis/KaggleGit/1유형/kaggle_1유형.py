@@ -21,9 +21,43 @@ result = data["f5"].mean()
 'f1'컬럼 결측치를 중앙값으로 채우기 전후의 표준편차를 구하고
 두 표준편차 차이 계산하기"""
 
+df = pd.read_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\practice\kaggle\kaggledataset\basic1.csv")
+data = df.iloc[0:70,:]
+before_std = data["f1"].std()
+#print("before_std :",before_std) # 17.987~
+# fill with median
+f1_median = data["f1"].median()
+data["f1"].fillna(f1_median, inplace= True) # series return method
+after_std = data["f1"].std()
+#print("after_std :",after_std) # 14.690 ~
+
+#print(abs(after_std - before_std)) # 3.296~
+
+
 
 """데이터셋(basic1.csv)의 'age'컬럼의 이상치를 더하시오!
 단, 평균으로부터 '표준편차*1.5'를 벗어나는 영역을 이상치라고 판단함"""
+
+# describe 없이 numpy.float return
+age_mean = df["age"].mean()
+age_std = df["age"].std()
+max_scal = age_mean + age_std*1.5
+min_scal = age_mean - age_std*1.5
+
+# print("outlier_max_sum :", df.loc[df["age"]> max_scal]["age"].sum()) # 491
+dum1 = df.loc[df["age"]> max_scal]["age"].sum()
+# print("outlier_min_sum :", df.loc[df["age"] < min_scal]["age"].sum()) # -17.5
+dum2 = df.loc[df["age"] < min_scal]["age"].sum()
+outlier = dum1 + dum2
+# print(outlier) # 473.5
+
+# print(df.loc[df["age"]<0]["age"].sum())
+
+# describe 로 특정 셀 포인터? loc[index, columns] 인덱스찾기
+# data = df[["age"]].describe().T
+# IQR = data["75%"] - data["25%"]
+# max_scal = data["75%"] + IQR *1.5
+
 
 # 문제2) 3회 기출
 pd.options.display.max_columns = None
@@ -53,25 +87,61 @@ data = df2.iloc[:int(len(df2)*0.6)]
 #print(RESULT)
 
 
-# 문제3) 4회 기출
+# 문제3) 4회 기출 
+# https://www.kaggle.com/code/agileteam/4th-type1-python
 """ data : basic1.csv
 age 컬럼의 3사분위수와 1사분위수의 차를 절대값으로 구하고, 소수점 버려서, 정수로 출력"""
+
+data = df[["age"]].describe().T.head()
+absol = abs(data["75%"] - data["25%"])
+# print(round(absol)) # 시리즈 출력 , 정수출력은 인덱싱 연산을필요로함 ! ***(미해결)
+# print("1사분위: ",df['age'].quantile(0.25))
+# print("3사분위: ",df['age'].quantile(0.75))
+
+result = abs(df['age'].quantile(0.25) - df['age'].quantile(0.75)) # 포인터?
+# print("절대값 차이: ",result)
+
+# print(int(result))
 
 """ data : fb.csv
 (loves반응+wows반응)/(reactions반응) 비율이 0.4보다 크고 0.5보다 작으면서,
 type 컬럼이 'video'인 데이터의 갯수"""
+df = pd.read_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\practice\kaggle\kaggledataset\fb.csv")
+ratio_series = (df["loves"] + df["wows"])/df["reactions"]
+condition = (0.4 < ratio_series)&(ratio_series<0.5)
+first_condition = df.loc[condition]
+result_df = first_condition.loc[df["type"] == "video"]
+# print(result_df.count()) # 90
 
 """data : nf.csv
-1-3. date_added가 2018년 1월 이면서 country가 United Kingdom 단독 제작인 데이터의 갯수"""
+1-3. date_added가 2018년 1월 이면서 
+country가 United Kingdom 단독 제작인 데이터의 갯수"""
+
+df = pd.read_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\practice\kaggle\kaggledataset\nf.csv")
+df["date_added"] = pd.to_datetime(df["date_added"])
+df["year"] = df["date_added"].dt.year
+df["month"] = df["date_added"].dt.month
+df["year"].fillna(0,inplace=True)
+df["month"].fillna(0,inplace=True)
+df["year"] = df["year"].astype(int)
+df["month"] = df["month"].astype(int)
+# condition = (df["year"] == 2018)&(df["month"] == 1) # encoding error
+# print(df.loc[condition])
 
 
 #문제4) 세션의 지속 시간을 분으로 계산하고 가장 긴 지속시간을 출력하시오(반올림 후 총 분만 출력)
-"""가장 많이 머무른 Page를 찾고 그 페이지의 머문 평균 시간을 구하시오 (반올림 후 총 시간만 출력)
+"""가장 많이 머무른 Page를 찾고 
+그 페이지의 머문 평균 시간을 구하시오 (반올림 후 총 시간만 출력) -- 출력1
+
 사용자들이 가장 활발히 활동하는 시간대(예: 새벽, 오전, 오후, 저녁)를 분석하세요.
-이를 위해 하루를 4개의 시간대로 나누고 각 시간대별로 가장 많이 시작된 세션의 수를 계산하고, 
-그 중에 가장 많은 세션 수를 출력하시오"""
+이를 위해 하루를 4개의 시간대로 나누고 
+각 시간대별로 가장 많이 시작된 세션의 수를 계산하고, 
+그 중에 가장 많은 세션 수를 출력하시오 -- 출력2"""
 # https://www.kaggle.com/code/agileteam/t1-33-timedelta-py/notebook
 # data : website.csv
+
+df = pd.read_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\practice\kaggle\kaggledataset\website.csv")
+print(df.head())
 # 새벽: 0시 부터 6시 전
 # 오전: 6시 부터 12시 전
 # 오후: 12 부터 18시 전

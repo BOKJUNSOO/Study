@@ -2,7 +2,7 @@
     오름차순으로 정렬된 MEDV 값에서 TOP10을구하시오"""
 # 공통제출코드
 import pandas as pd
-df = pd.read_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\data\boston.csv")
+df = pd.read_csv(r"C:\Users\brian\Desktop\JUNSOO\study\2.Python\1.BigDataAnalysis\practice\kaggle\kaggledataset\boston.csv")
 
 # 제출코드1
 # print(df.sort_values(by = "MEDV", ascending = True)["MEDV"])
@@ -21,7 +21,7 @@ rm_mean = df["RM"].mean()
 df["RM"].fillna(rm_mean, inplace = True)
 mean_na_std = df["RM"].std()
 
-# print(abs(dropna_std - mean_na_std))
+print(abs(dropna_std - mean_na_std))
 
 
 
@@ -33,8 +33,9 @@ zn_mean = df["ZN"].mean()
 zn_std = df["ZN"].std()
 max_lier = zn_mean + zn_std * 1.5
 min_lier = zn_mean - zn_std * 1.5
-#print(df.loc[(max_lier < df["ZN"])]["ZN"].sum())
-#print(df.loc[(min_lier > df["ZN"])]["ZN"].sum())
+val1 = df.loc[(max_lier < df["ZN"])]["ZN"].sum()
+val2 = df.loc[(min_lier > df["ZN"])]["ZN"].sum()
+# print(val1 + val2)
 
 
 
@@ -53,23 +54,41 @@ IQR = df2["75%"] - df2["25%"]
     그리고 MEDV 칼럼의 평균값, 중위값, 최솟값, 최댓값 순으로 한줄에 출력하시오."""
 
 # sort_values 는 dataframe 을 리턴하지만 원래 값을 바꿔줘야함 ()
-val = df.sort_values(by = "MEDV", ascending = False)["MEDV"].iloc[29]   # 41.7
-# df.sort_values(by = "MEDV", ascending = False , inplace = True) 매개변수 inplace 없으면 값대체 안된다.
-df["MEDV"].iloc[0:29] = val # 대입연산
-#print(df["MEDV"].sort_values(ascending = False).head()) # 대체 안됨
+val = df.sort_values(by = "MEDV", ascending = False)["MEDV"].iloc[29]   # 메모리에 저장됨
+print("val : ",val) # 41.7
+# print("unique :" ,df["MEDV"].unique())
+# df.sort_values(by = "MEDV", ascending = False , inplace = True) #매개변수 inplace 없으면 값대체 안된다.
+df["MEDV"].sort_values(ascending = False).iloc[0:29] = val 
+                                                           # inplace 가 없다면
+                                                           # df["MEDV"].sort_values(ascending = False).iloc[0:29]
+                                                           # 라는 새로운 스택에 val 을 저장하고
+                                                           # df 자체에는 변화가 없음
+                                                           # df["MEDV"].sort_values(ascending = False).iloc[0:29]
+                                                           # 라는 스택은 변수가 아니기 때문에 다시 print 해도
+                                                           # 같은 변수가아님 // 원래 값으로 되돌아감(list.sort랑 다른 개념)
+                                                           # 메모리 스택 삭제됨!
+# print(df["MEDV"].unique()) # 0~29 행 뿐만아니라 모든 행이 대체돼버림..
+print(df.sort_values(by = "MEDV" , ascending=False).head(20))
 
 # 이건 왜 될까
 val = df.sort_values(by = "MEDV", ascending = False)["MEDV"].iloc[29] # 41.7
-new_data = df.sort_values(by = "MEDV", ascending = False)["MEDV"] # 변수 생성 (sort한 값을 저장)
-new_data.iloc[0:29] = val   # 대입연산
-#print(new_data.head()) # 41.7로 대체됨
+new_data = df.sort_values(by = "MEDV", ascending = False)["MEDV"] # 변수 생성 (sort한 값을 저장) 메모리스택에서 안날라감
+df.sort_values(by = "MEDV", ascending = False)["MEDV"].iloc[0:29] = val
+# new_data[0:29] = val   # 대입연산
+# print(new_data.unique())
+# print(new_data.head()) # 41.7로 대체됨
 
 
-# loc 을 쓰면 안된다 왜..????**
-#df2 = df.sort_values(by = "MEDV", ascending=False)
-#val = df2.loc[30, "MEDV"]
-#df.sort_values(by = "MEDV", ascending=True).loc[1:,"MEDV"].info() # = val
-#print(df["MEDV"].sort_values(ascending=True).head())
+# loc 을 써서 해보잠
+df2 = df.sort_values(by = "MEDV", ascending=False)
+val = df2["MEDV"].iloc[29]
+print("val with location:" ,val) # 41.7
+df2.reset_index(drop = False , inplace= True) # reset index 했으므로 loc 쓰기 수월
+df2.loc[1:30 ,"MEDV"] = val
+print(df2.sort_values(by = "MEDV",ascending = False)["MEDV"].iloc[27:32])
+
+# df.sort_values(by = "MEDV", ascending=True).loc[1:,"MEDV"].info() # = val
+# print(df["MEDV"].sort_values(ascending=True).head())
 
 
 """boston 데이터세트의 TAX 칼럼이 TAX 칼럼의 중위값보다 큰 데이터를 대상으로,
@@ -137,8 +156,8 @@ scaler = StandardScaler()
 temp = df[["DIS"]]
 new_data = pd.DataFrame(scaler.fit_transform(temp), columns = temp.columns)
 
-new_data = new_data.loc[(0.4 < new_data["DIS"]) & (new_data["DIS"] <0.6)] # loc 내의 condition and 말고 &**
-#print(round(new_data["DIS"].mean(),2))
+new_data = new_data.loc[(0.4 < new_data["DIS"]) & (new_data["DIS"] <0.6)] # loc 내의 condition and 말고 &
+print(round(new_data["DIS"].mean(),2))
 
 
 """boston 데이터의 전체 칼럼에 대해서 중복을 제거한
