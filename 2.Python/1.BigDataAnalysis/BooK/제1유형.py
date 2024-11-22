@@ -144,8 +144,8 @@ new_data.columns = ["COUNT"]
 new_data = new_data.reset_index(drop = False)   # groupby 한 프레임이 정돈된다!** 
                                                 # AGE 인덱스사용하기 위해서 drop = False
 #print(new_data.head())
-#print(new_data.sort_values(by = "COUNT", ascending=False).iloc[0,0],
-#      new_data.sort_values(by = "COUNT", ascending=False).iloc[0,1])
+print(new_data.sort_values(by = "COUNT", ascending=False).iloc[0,0],
+new_data.sort_values(by = "COUNT", ascending=False).iloc[0,1])
 
 
 """boston 데이터 세트의 DIS 칼럼을 표준화 척도로 변환한 후, 
